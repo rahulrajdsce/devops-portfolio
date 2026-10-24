@@ -1,0 +1,59 @@
+
+services:
+  backend:
+    image: devops-portfolio-api:phase5
+    container_name: devops-portfolio-api
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      NODE_ENV: production
+      PORT: "3001"
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: devops_portfolio
+      DB_USER: portfolio_app
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in the project .env file}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3001:3001"
+    networks:
+      - portfolio-net
+
+  frontend:
+    image: devops-portfolio-frontend:phase5
+    container_name: devops-portfolio-frontend
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8081:8080"
+    depends_on:
+      - backend
+    networks:
+      - portfolio-net
+  db:
+    image: mysql:8.4
+    container_name: devops-portfolio-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: devops_portfolio
+      MYSQL_USER: portfolio_app
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in the project .env file}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in the project .env file}
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - portfolio-net
+
+networks:
+  portfolio-net:
+    driver: bridge
+volumes:
+  mysql_data:

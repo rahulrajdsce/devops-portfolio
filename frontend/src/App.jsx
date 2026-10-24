@@ -1,0 +1,96 @@
+import { useMemo, useState } from 'react';
+import {
+  Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Boxes, Check, ChevronDown,
+  Cloud, Code2, Container, Database, ExternalLink, Github, Layers3, Linkedin,
+  Mail, Menu, Network, Send, ShieldCheck, Terminal, Workflow, X, Zap,
+} from 'lucide-react';
+import { profile, skillGroups, projects, journey, experience, education, certifications, posts } from './data';
+
+const iconMap = { terminal: Terminal, container: Container, workflow: Workflow, cloud: Cloud, activity: Activity, code: Code2, layers: Layers3, boxes: Boxes, database: Database };
+const filters = ['All', 'CI/CD', 'Containers', 'Kubernetes', 'Cloud', 'Monitoring', 'Automation'];
+
+function SectionHeading({ eyebrow, title, description, number }) {
+  return <div className="section-heading"><div><div className="eyebrow"><span>{number}</span>{eyebrow}</div><h2>{title}</h2>{description && <p>{description}</p>}</div><span className="heading-mark" aria-hidden="true">✳</span></div>;
+}
+
+function Header() {
+  const [open, setOpen] = useState(false);
+  const links = [['About', '#about'], ['Stack', '#stack'], ['Projects', '#projects'], ['Experience', '#experience'], ['Notes', '#notes']];
+  return <header className="site-header"><a className="brand" href="#home" aria-label="Back to home"><span className="brand-icon"><Terminal size={18}/></span><span>{profile.initials}<i>.</i></span></a><button className="mobile-menu" onClick={() => setOpen(!open)} aria-label={open ? 'Close navigation' : 'Open navigation'} aria-expanded={open}>{open ? <X/> : <Menu/>}</button><nav className={open ? 'nav-links nav-open' : 'nav-links'} aria-label="Main navigation">{links.map(([label, href], i) => <a key={href} href={href} onClick={() => setOpen(false)}><span>0{i + 1}</span>{label}</a>)}<a className="nav-contact" href="#contact" onClick={() => setOpen(false)}>Let's talk <ArrowUpRight size={15}/></a></nav></header>;
+}
+
+function TerminalCard() {
+  return <div className="terminal-card"><div className="terminal-top"><div className="window-dots"><i/><i/><i/></div><span>profile.sh</span><span className="terminal-live"><b/> SYSTEM ONLINE</span></div><div className="terminal-body"><div className="terminal-line"><span className="prompt">➜</span><span className="terminal-path">~/portfolio</span><span className="terminal-command"> whoami</span></div><div className="terminal-output name-output">devops-engineer</div><div className="terminal-line"><span className="prompt">➜</span><span className="terminal-path">~/portfolio</span><span className="terminal-command"> cat focus.txt</span></div><div className="terminal-output"><span>→</span> automate the repeatable<br/><span>→</span> ship with confidence<br/><span>→</span> observe what matters</div><div className="terminal-line last-line"><span className="prompt">➜</span><span className="terminal-path">~/portfolio</span><span className="terminal-command"> <span className="cursor"/></span></div></div><div className="terminal-bottom"><span><ShieldCheck size={13}/> secure by design</span><span>UTF-8 · LF</span></div></div>;
+}
+
+function Hero() {
+  return <section className="hero section-wrap" id="home"><div className="hero-copy"><div className="availability"><span className="availability-dot"/>{profile.availability}</div><p className="hero-kicker">HELLO, WORLD. I'M</p><h1>{profile.name.split(' ')[0]}<br/><span>building</span> better<br/>delivery systems<span className="accent">.</span></h1><p className="hero-description">{profile.intro}</p><div className="hero-actions"><a className="button button-primary" href="#projects">Explore my work <ArrowUpRight size={17}/></a><a className="button button-quiet" href="#contact">Get in touch <ArrowDownRight size={16}/></a></div><div className="hero-meta"><span><Network size={14}/>{profile.location}</span><span className="mono">LATITUDE: ALWAYS LEARNING</span></div></div><div className="hero-visual"><div className="visual-grid"/><div className="orbit orbit-one"/><div className="orbit orbit-two"/><div className="orbit-core"><div className="core-inner"><Terminal size={35}/><span>DEV<br/>OPS</span></div></div><div className="orbit-label label-docker"><Container size={15}/> Docker</div><div className="orbit-label label-cloud"><Cloud size={15}/> Cloud</div><div className="orbit-label label-git"><Workflow size={15}/> CI/CD</div><div className="orbit-label label-kube"><Boxes size={15}/> Kubernetes</div><div className="visual-caption"><span className="caption-line"/>DESIGN · AUTOMATE · DEPLOY</div><TerminalCard/></div><div className="hero-index"><span>SCROLL TO EXPLORE</span><span className="index-line"/><span>01 / 05</span></div></section>;
+}
+
+function About() {
+  const principles = [{ n: '01', title: 'Automate the repeatable', text: 'Reduce manual steps with scripts and reliable pipelines.' }, { n: '02', title: 'Build for operability', text: 'Make systems observable, documented, and easier to troubleshoot.' }, { n: '03', title: 'Learn in public', text: 'Turn hands-on experiments into clear, reproducible projects.' }];
+  return <section className="section-wrap section-block" id="about"><SectionHeading number="01" eyebrow="A LITTLE ABOUT ME" title={<>Curiosity into<br/><span className="muted-heading">capability.</span></>} description="Engineering is not just getting it to work. It's making it repeatable."/><div className="about-grid"><div className="about-copy"><p className="large-copy">I'm a DevOps engineer in the making, interested in the systems and workflows that help teams ship software with confidence.</p><p className="body-copy">{profile.summary}</p><p className="body-copy">My approach is practical: build something, understand every moving part, document the trade-offs, and improve it through iteration. This portfolio is a living record of that work.</p><a className="text-link" href={profile.github} target="_blank" rel="noreferrer">Explore my GitHub <ArrowUpRight size={16}/></a></div><div className="principles">{principles.map(p => <article className="principle" key={p.n}><span className="principle-number">{p.n}</span><div><h3>{p.title}</h3><p>{p.text}</p></div><ArrowUpRight className="principle-arrow" size={17}/></article>)}</div></div></section>;
+}
+
+function Stack() {
+  return <section className="section-wrap section-block stack-section" id="stack"><SectionHeading number="02" eyebrow="TOOLS OF THE TRADE" title={<>A stack built for<br/><span className="muted-heading">reliable delivery.</span></>} description="Technologies I use, practise, or am actively learning. Proficiency is represented honestly, not by arbitrary percentages."/><div className="skill-grid">{skillGroups.map((group, i) => { const Icon = iconMap[group.icon] || Code2; return <article className="skill-card" key={group.title}><div className="skill-card-top"><span className="skill-icon"><Icon size={19}/></span><span className="skill-index">0{i + 1}</span></div><h3>{group.title}</h3><div className="skill-tags">{group.skills.map(skill => <span key={skill}>{skill}</span>)}</div></article>; })}</div><div className="stack-note"><Zap size={16}/><p><strong>Always learning.</strong> Skills listed here reflect a mix of hands-on practice and active learning. Project write-ups explain what was actually implemented.</p></div></section>;
+}
+
+function SearchIconPlaceholder() { return <span className="empty-search-mark" aria-hidden="true">⌕</span>; }
+
+function Projects() {
+  const [filter, setFilter] = useState('All');
+  const [selected, setSelected] = useState(null);
+  const [query, setQuery] = useState('');
+  const visibleProjects = useMemo(() => projects.filter(p => (filter === 'All' || p.category === filter) && `${p.title} ${p.description} ${p.stack.join(' ')}`.toLowerCase().includes(query.toLowerCase())), [filter, query]);
+  return <section className="section-wrap section-block projects-section" id="projects"><SectionHeading number="03" eyebrow="SELECTED WORK" title={<>Built to learn.<br/><span className="muted-heading">Designed to last.</span></>} description="Hands-on labs and practical builds around automation, delivery, and reliable infrastructure."/><div className="project-toolbar"><label className="project-search"><span className="sr-only">Search projects</span><input type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search projects or technologies…"/></label><div className="filter-list" role="group" aria-label="Filter projects">{filters.map(f => <button key={f} className={filter === f ? 'filter active' : 'filter'} onClick={() => setFilter(f)} aria-pressed={filter === f}>{f}</button>)}</div><span className="project-count mono">{String(visibleProjects.length).padStart(2, '0')} PROJECTS</span></div><div className="project-grid">{visibleProjects.length ? visibleProjects.map(project => { const Icon = iconMap[project.icon] || Code2; return <article className="project-card" key={project.id}><div className="project-card-top"><span className="project-number">/{project.number}</span><span className="project-status"><i/>{project.status}</span></div><div className="project-art"><div className="art-grid"/><div className="art-symbol"><Icon size={37} strokeWidth={1.2}/></div><span className="art-code">0x{project.id} · PIPELINE</span><span className="art-corner art-corner-one"/><span className="art-corner art-corner-two"/></div><div className="project-content"><div className="project-category">{project.category}</div><h3>{project.title}</h3><p>{project.description}</p><div className="project-stack">{project.stack.map(s => <span key={s}>{s}</span>)}</div><button className="project-link" onClick={() => setSelected(project)}>Project details <ArrowUpRight size={16}/></button></div></article>; }) : <div className="project-empty-state"><SearchIconPlaceholder/><h3>No matching projects</h3><p>Try another keyword or choose a different category.</p><button className="filter" onClick={() => { setFilter("All"); setQuery(""); }}>Clear filters</button></div>}</div><div className="project-footnote"><span className="footnote-mark">i</span><p>Project statuses are illustrative placeholders. Replace these descriptions with your real repository links, screenshots, implementation notes, and verified outcomes before publishing.</p></div>{selected && <div className="modal-backdrop" role="presentation" onMouseDown={e => { if (e.target === e.currentTarget) setSelected(null); }}><section className="project-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button className="modal-close" onClick={() => setSelected(null)} aria-label="Close project details"><X/></button><div className="eyebrow"><span>{selected.number}</span>{selected.category} / PROJECT NOTES</div><h2 id="modal-title">{selected.title}</h2><span className="project-status"><i/>{selected.status}</span><p>{selected.details}</p><h4>Technology stack</h4><div className="project-stack">{selected.stack.map(s => <span key={s}>{s}</span>)}</div><a className="button button-primary modal-button" href={profile.github} target="_blank" rel="noreferrer">Add your repository <ExternalLink size={16}/></a><p className="modal-hint">Update the project data in <code>src/data.js</code> with a verified repository URL.</p></section></div>}</section>;
+}
+
+function Journey() {
+  return <section className="section-wrap section-block journey-section" id="journey"><SectionHeading number="04" eyebrow="THE ROAD AHEAD" title={<>Progress over<br/><span className="muted-heading">perfection.</span></>} description="A practical learning journey, built around projects and repeatable proof of work."/><div className="journey-list">{journey.map((item, i) => <article className="journey-item" key={item.title}><div className="journey-marker"><span>{i + 1}</span></div><div className="journey-date">{item.date}</div><div className="journey-detail"><h3>{item.title}</h3><p>{item.description}</p></div><span className="journey-state">{i === 0 ? 'IN PROGRESS' : 'UP NEXT'}</span></article>)}</div></section>;
+}
+
+function ExperienceAndCredentials() {
+  return <section className="section-wrap section-block" id="experience"><SectionHeading number="05" eyebrow="BACKGROUND & LEARNING" title={<>Experience grounded<br/><span className="muted-heading">in practice.</span></>} description="Replace the clearly marked examples below with your verified work, education, and certifications."/><div className="timeline-cards">{experience.map(item => <article className="timeline-card" key={item.title}><div className="timeline-card-top"><span>{item.label}</span>{item.demo && <span className="example-label">EXAMPLE CONTENT</span>}</div><h3>{item.title}</h3><p className="timeline-org">{item.organization} · {item.period}</p><p>{item.description}</p></article>)}</div><div className="credential-grid"><article className="credential-panel"><div className="eyebrow"><span>ED</span> EDUCATION</div>{education.map(item => <div className="credential-item" key={item.title}><h3>{item.title}</h3><p>{item.organization} · {item.period}</p><span>{item.description}</span></div>)}</article><article className="credential-panel"><div className="eyebrow"><span>CR</span> CERTIFICATIONS</div>{certifications.map(item => <div className="credential-item" key={item.title}><h3>{item.title}</h3><p>{item.issuer} · {item.period}</p><span>{item.description}</span></div>)}</article></div></section>;
+}
+
+function Notes() {
+  return <section className="section-wrap section-block notes-section" id="notes"><SectionHeading number="06" eyebrow="ENGINEERING NOTES" title={<>Learn it. Build it.<br/><span className="muted-heading">Write it down.</span></>} description="Technical notes are a useful way to show your reasoning, not just a list of tools."/><div className="notes-grid">{posts.map((post, i) => <article className="note-card" key={post.title}><div className="note-meta"><span>{post.category}</span><span>{post.readTime}</span></div><div className="note-number">0{i + 1}</div><h3>{post.title}</h3><p>{post.description}</p><span className="example-label">{post.status}</span></article>)}</div></section>;
+}
+
+function Contact() {
+  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '', website: '' });
+  const [state, setState] = useState({ status: 'idle', message: '' });
+  const update = e => setForm({ ...form, [e.target.name]: e.target.value });
+  async function submit(e) {
+    e.preventDefault();
+    if (form.website) { setState({ status: 'success', message: 'Thanks — your message has been received.' }); return; }
+    setState({ status: 'loading', message: '' });
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/contact`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: form.name.trim(), email: form.email.trim(), subject: form.subject.trim(), message: form.message.trim() }) });
+      const contentType = response.headers.get('content-type') || '';
+      const payload = contentType.includes('application/json') ? await response.json().catch(() => ({})) : {};
+      if (!response.ok) {
+        if (response.status === 404 || !contentType.includes('application/json')) {
+          const unavailable = new Error('The contact API could not be reached. Please try again later or use the email link below.');
+          unavailable.code = 'CONTACT_API_UNAVAILABLE';
+          throw unavailable;
+        }
+        throw new Error(payload.message || 'Unable to send your message right now.');
+      }
+      setState({ status: 'success', message: payload.message || 'Thanks — your message has been sent.' });
+      setForm({ name: '', email: '', subject: '', message: '', website: '' });
+    } catch (error) {
+      setState({ status: 'error', message: (error.message === 'Failed to fetch' || error.code === 'CONTACT_API_UNAVAILABLE') ? 'The contact API could not be reached. Please try again later or use the email link below.' : error.message });
+    }
+  }
+  return <section className="section-wrap section-block contact-section" id="contact"><div className="contact-panel"><div className="contact-copy"><div className="eyebrow"><span>05</span> YOUR NEXT MOVE</div><h2>Let's build<br/>something <span>reliable.</span></h2><p>Have a role, a project, or an interesting infrastructure problem? I'd be glad to hear from you.</p><a className="contact-email" href={`mailto:${profile.email}`}><Mail size={17}/>{profile.email}<ArrowUpRight size={16}/></a><div className="contact-socials"><a href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub"><Github size={18}/></a><a href={profile.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={18}/></a><span className="social-note">Usually responds within 1–2 business days</span></div><div className="contact-decoration" aria-hidden="true"><span/><span/><span/><span/><span/><span/><span/><span/><span/></div></div><form className="contact-form" onSubmit={submit}><div className="form-heading"><span>CONTACT FORM</span><span className="form-secure"><ShieldCheck size={13}/> YOUR DETAILS STAY PRIVATE</span></div><div className="form-row"><label>Your name<input name="name" autoComplete="name" value={form.name} onChange={update} placeholder="Jane Smith" required minLength={2} maxLength={100}/></label><label>Email address<input name="email" type="email" autoComplete="email" value={form.email} onChange={update} placeholder="jane@company.com" required maxLength={254}/></label></div><label>Subject<input name="subject" value={form.subject} onChange={update} placeholder="What would you like to discuss?" required minLength={3} maxLength={160}/></label><label>Message<textarea name="message" value={form.message} onChange={update} placeholder="A little context helps me get back to you..." rows={5} required minLength={10} maxLength={5000}/></label><label className="honeypot" aria-hidden="true">Leave this field empty<input name="website" tabIndex={-1} autoComplete="off" value={form.website} onChange={update}/></label>{state.message && <div className={`form-feedback ${state.status}`} role="status">{state.status === 'success' && <Check size={16} />}{state.message}</div>}<button className="button button-primary submit-button" type="submit" disabled={state.status === 'loading'}>{state.status === 'loading' ? 'Sending…' : state.status === 'success' ? 'Send another message' : 'Send message'}{state.status === 'loading' ? <span className="spinner"/> : <Send size={16}/>}</button><p className="form-privacy">By submitting, you agree to be contacted about your message. Never include passwords or sensitive information.</p></form></div></section>;
+}
+
+function Footer() {
+  return <footer className="site-footer section-wrap"><a className="brand" href="#home"><span className="brand-icon"><Terminal size={17}/></span><span>{profile.initials}<i>.</i></span></a><p>Designed with intention. Built to keep learning.</p><div className="footer-right"><span>© {new Date().getFullYear()} {profile.name}</span><a href="#home">Back to top ↑</a></div></footer>;
+}
+
+export default function App() {
+  return <><Header/><main><Hero/><div className="section-divider"><span>01 — THE PERSON BEHIND THE PIPELINE</span><span>SCROLL <ChevronDown size={13}/></span></div><About/><Stack/><Projects/><Journey/><ExperienceAndCredentials/><Notes/><Contact/></main><Footer/></>;
+}
